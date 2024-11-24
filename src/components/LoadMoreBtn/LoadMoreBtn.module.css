@@ -1,0 +1,20 @@
+.loadMoreBtn {
+  border-radius: 8px;
+  padding: 8px 16px;
+  min-width: 86px;
+  height: 40px;
+  background-color: #4e75ff;
+  border: none;
+  cursor: pointer;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.5;
+  letter-spacing: 0.04em;
+  color: #fff;
+}
+
+.loadMoreBtn:hover,
+.loadMoreBtn:focus {
+  background-color: #6c8cff;
+}

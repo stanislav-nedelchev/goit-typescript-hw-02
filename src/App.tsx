@@ -1,7 +1,7 @@
 import './App.css';
 import { findImages } from './api/api';
 import { useEffect, useState } from 'react';
-import toast, { Toaster } from 'react-hot-toast';
+import { Toaster } from 'react-hot-toast';
 
 import ImageGallery from './components/ImageGallery/ImageGallery';
 import ImageModal from './components/ImageModal/ImageModal';
@@ -9,16 +9,19 @@ import Loader from './components/Loader/Loader';
 import SearchBar from './components/SearchBar/SearchBar';
 import ErrorMessage from './components/ErrorMessage/ErrorMessage';
 import LoadMoreBtn from './components/LoadMoreBtn/LoadMoreBtn';
+import { Image, ImgModal } from './App.types';
+
+type ApiResponse = { results: Image[]; total: number; total_pages: number };
 
 function App() {
-  const [images, setImages] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(false);
-  const [query, setQuery] = useState('');
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(0);
-  const [modalIsOpen, setIsOpen] = useState(false);
-  const [modalImage, setModalImage] = useState(null);
+  const [images, setImages] = useState<Image[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<boolean | string>(false);
+  const [query, setQuery] = useState<string>('');
+  const [page, setPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(0);
+  const [modalIsOpen, setIsOpen] = useState<boolean>(false);
+  const [modalImage, setModalImage] = useState<null | ImgModal>(null);
 
   useEffect(() => {
     if (!query) {
@@ -28,11 +31,11 @@ function App() {
     async function fetchImages() {
       setIsLoading(true);
       try {
-        const data = await findImages(query, page);
+        const data: ApiResponse = await findImages(query, page);
         setImages(previmages => [...previmages, ...data.results]);
         setTotalPages(data.total_pages);
       } catch (error) {
-        setErrorMessage(error.message);
+        setErrorMessage((error as Error).message);
       } finally {
         setIsLoading(false);
       }
@@ -40,7 +43,7 @@ function App() {
     fetchImages();
   }, [query, page]);
 
-  const openModal = image => {
+  const openModal = (image: ImgModal): void => {
     setModalImage(image);
     setIsOpen(true);
   };
@@ -50,7 +53,7 @@ function App() {
     setIsOpen(false);
   };
 
-  const handleSubmit = query => {
+  const handleSubmit = (query: string): void => {
     setQuery(query);
     setImages([]);
   };
@@ -72,7 +75,7 @@ function App() {
         {page < totalPages && <LoadMoreBtn onClick={handleClick} />}
         {isLoading && <Loader />}
         {errorMessage && <ErrorMessage />}
-        <Toaster toast={toast} />
+        <Toaster />
       </div>
     </>
   );
